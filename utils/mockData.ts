@@ -1,0 +1,133 @@
+import { Transaction } from '../types/Transaction';
+import { Contact } from '../types/Contact';
+
+// Mock transactions for development
+export const mockTransactions: Transaction[] = [
+  {
+    id: 'tx1',
+    type: 'receive',
+    amount: 1.25,
+    timestamp: '2025-04-08T14:32:21Z',
+    sender: '@alexcrypto',
+    status: 'confirmed',
+  },
+  {
+    id: 'tx2',
+    type: 'send',
+    amount: 0.5,
+    timestamp: '2025-04-07T10:15:45Z',
+    recipient: '@sarahwallet',
+    status: 'confirmed',
+  },
+  {
+    id: 'tx3',
+    type: 'receive',
+    amount: 0.75,
+    timestamp: '2025-04-05T22:07:33Z',
+    sender: 'Mike Johnson',
+    status: 'confirmed',
+  },
+  {
+    id: 'tx4',
+    type: 'send',
+    amount: 0.2,
+    timestamp: '2025-04-03T18:42:11Z',
+    recipient: 'Coffee Shop',
+    status: 'confirmed',
+  },
+  {
+    id: 'tx5',
+    type: 'receive',
+    amount: 2.0,
+    timestamp: '2025-04-01T09:30:25Z',
+    sender: 'Work Payment',
+    status: 'confirmed',
+  },
+];
+
+// Mock contacts for development
+export const mockedContacts: Contact[] = [
+  {
+    id: '1',
+    name: 'Alex Thompson',
+    username: '@alexcrypto',
+    walletAddress: '5YNmS1R9nNSCDzb5a7mMJ1dwK9uHeAAF4CerVnwgX5xC',
+    phoneNumber: '+1234567890',
+    avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+    isOnKraftPay: true,
+  },
+  {
+    id: '2',
+    name: 'Sarah Wilson',
+    username: '@sarahwallet',
+    walletAddress: '7bnqMD7ySbDrKtGzD4LDc98pWu8SEUtSQnFiABpHc1Bg',
+    phoneNumber: '+1987654321',
+    avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
+    isOnKraftPay: true,
+  },
+  {
+    id: '3',
+    name: 'Mike Johnson',
+    walletAddress: '9JnP9PZZcuWQVjLeSuPVvmwwYy4q92reBx7MqhZQKC2q',
+    phoneNumber: '+1456789012',
+    avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
+    isOnKraftPay: false,
+  },
+  {
+    id: '4',
+    name: 'Jessica Brown',
+    username: '@jessbrown',
+    walletAddress: '2XY4ZDuUUM6oQCdmWyTHzh45S4EENs2QsEGAH4KkNQZJ',
+    phoneNumber: '+1567890123',
+    avatar: 'https://randomuser.me/api/portraits/women/4.jpg',
+    isOnKraftPay: true,
+  },
+  {
+    id: '5',
+    name: 'David Smith',
+    phoneNumber: '+1678901234',
+    avatar: 'https://randomuser.me/api/portraits/men/5.jpg',
+    isOnKraftPay: false,
+  },
+  {
+    id: '6',
+    name: 'Emily Davis',
+    username: '@emcrypto',
+    walletAddress: '3YfVwqRMBCM74XP1z6rNUJjsBYuEXqSPzXjQzxCS4XLr',
+    phoneNumber: '+1789012345',
+    avatar: 'https://randomuser.me/api/portraits/women/6.jpg',
+    isOnKraftPay: true,
+  },
+  {
+    id: '7',
+    name: 'James Wilson',
+    phoneNumber: '+1890123456',
+    avatar: 'https://randomuser.me/api/portraits/men/7.jpg',
+    isOnKraftPay: false,
+  },
+  {
+    id: '8',
+    name: 'Amanda Miller',
+    username: '@amandamil',
+    walletAddress: '4kHLZuMQC792fubwzTjyMKnHxF1G2ZCTzhFHGQyEfdDY',
+    phoneNumber: '+1901234567',
+    avatar: 'https://randomuser.me/api/portraits/women/8.jpg',
+    isOnKraftPay: true,
+  },
+  {
+    id: '9',
+    name: 'Ryan Clark',
+    phoneNumber: '+1012345678',
+    avatar: 'https://randomuser.me/api/portraits/men/9.jpg',
+    isOnKraftPay: false,
+  },
+  {
+    id: '10',
+    name: 'Olivia White',
+    username: '@oliviacrypto',
+    walletAddress: '6Dvi6P3rqNYj8aZT8tJLHgLQsVeDeRXrX6uMNRpzt3B3',
+    phoneNumber: '+1123456789',
+    avatar: 'https://randomuser.me/api/portraits/women/10.jpg',
+    isOnKraftPay: true,
+  },
+];
