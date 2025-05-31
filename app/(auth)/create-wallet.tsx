@@ -3,10 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } fr
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWallet } from '@/context/WalletContext';
-import { Copy, AlertCircle, CheckCircle2 } from 'lucide-react-native';
+import { Copy, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
+import React from 'react';
 
 export default function CreateWalletScreen() {
   const router = useRouter();
@@ -52,9 +53,24 @@ export default function CreateWalletScreen() {
     }
   };
 
+  const renderWordDisplay = (index: number, word: string) => (
+    <View key={index} style={styles.wordContainer}>
+      <Text style={styles.wordNumber}>{index + 1}</Text>
+      <Text style={styles.wordText}>{word}</Text>
+    </View>
+  );
+
+  const seedWords = seedPhrase ? seedPhrase.split(' ') : [];
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <ArrowLeft size={24} color="#FFFFFF" />
+        </TouchableOpacity>
         <Text style={styles.title}>Create New Wallet</Text>
       </View>
 
@@ -87,16 +103,27 @@ export default function CreateWalletScreen() {
             <Text style={styles.description}>
               Here is your seed phrase. Write it down and store it in a secure location.
             </Text>
-            <View style={styles.seedPhraseContainer}>
-              <Text style={styles.seedPhrase}>{seedPhrase}</Text>
-              <TouchableOpacity style={styles.copyButton} onPress={handleCopyToClipboard}>
+
+            <View style={styles.copyButtonContainer}>
+              <TouchableOpacity style={styles.copyAllButton} onPress={handleCopyToClipboard}>
                 {copied ? (
-                  <CheckCircle2 size={20} color="#14F195" />
+                  <>
+                    <CheckCircle2 size={16} color="#14F195" />
+                    <Text style={styles.copyAllButtonText}>Copied!</Text>
+                  </>
                 ) : (
-                  <Copy size={20} color="#94A3B8" />
+                  <>
+                    <Copy size={16} color="#14F195" />
+                    <Text style={styles.copyAllButtonText}>Copy All</Text>
+                  </>
                 )}
               </TouchableOpacity>
             </View>
+
+            <View style={styles.wordsGrid}>
+              {seedWords.map((word, index) => renderWordDisplay(index, word))}
+            </View>
+
             <View style={styles.warningBox}>
               <AlertCircle size={24} color="#F59E0B" style={styles.warningIcon} />
               <Text style={styles.warningText}>
@@ -134,10 +161,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F172A',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 24,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#1E293B',
+  },
+  backButton: {
+    marginRight: 16,
+    padding: 4,
   },
   title: {
     fontFamily: 'Inter-Bold',
@@ -186,6 +219,58 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-SemiBold',
     fontSize: 16,
     color: '#0F172A',
+  },
+  copyButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 16,
+  },
+  copyAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E293B',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  copyAllButtonText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 14,
+    color: '#14F195',
+    marginLeft: 6,
+  },
+  wordsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  wordContainer: {
+    width: '31%',
+    marginBottom: 16,
+    backgroundColor: '#1E293B',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#334155',
+    overflow: 'hidden',
+  },
+  wordNumber: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 12,
+    color: '#64748B',
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  wordText: {
+    color: '#FFFFFF',
+    fontFamily: 'Inter-Medium',
+    fontSize: 16,
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+    minHeight: 20,
   },
   seedPhraseContainer: {
     backgroundColor: '#1E293B',
