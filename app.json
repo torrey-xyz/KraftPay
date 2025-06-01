@@ -11,6 +11,13 @@
     "ios": {
       "supportsTablet": true
     },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.kraftpay.solana.wallet"
+    },
     "web": {
       "bundler": "metro",
       "output": "single",
