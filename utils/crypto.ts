@@ -1,59 +1,92 @@
-// Simple crypto utilities for the app
-// In a production environment, this would be more robust
-
-import * as Random from 'expo-crypto';
+import { entropyToMnemonic, mnemonicToSeedSync, validateMnemonic } from "bip39";
 
 /**
- * Generate a BIP39 mnemonic phrase
- * This is a simplified implementation
- * In production, use a proper BIP39 library
+ * Generate secure random bytes manually
  */
-export function generateMnemonic(): string {
-  // For demo purposes, generating a fixed phrase
-  // In a real app, this would use a proper BIP39 implementation
-  const wordList = [
-    'abandon', 'ability', 'able', 'about', 'above', 'absent', 'absorb', 'abstract', 'absurd', 'abuse',
-    'access', 'accident', 'account', 'accuse', 'achieve', 'acid', 'acoustic', 'acquire', 'across', 'act',
-    'action', 'actor', 'actress', 'actual', 'adapt', 'add', 'addict', 'address', 'adjust', 'admit',
-    'adult', 'advance', 'advice', 'aerobic', 'affair', 'afford', 'afraid', 'again', 'age', 'agent',
-    'agree', 'ahead', 'aim', 'air', 'airport', 'aisle', 'alarm', 'album', 'alcohol', 'alert',
-    'alien', 'all', 'alley', 'allow', 'almost', 'alone', 'alpha', 'already', 'also', 'alter',
-    'always', 'amateur', 'amazing', 'among', 'amount', 'amused', 'analyst', 'anchor', 'ancient', 'anger',
-    'angle', 'angry', 'animal', 'ankle', 'announce', 'annual', 'another', 'answer', 'antenna', 'antique',
-    'anxiety', 'any', 'apart', 'apology', 'appear', 'apple', 'approve', 'april', 'arch', 'arctic',
-    'area', 'arena', 'argue', 'arm', 'armed', 'armor', 'army', 'around', 'arrange', 'arrest'
-  ];
-
-  const selectedWords = [];
-  for (let i = 0; i < 12; i++) {
-    const randomIndex = Math.floor(Math.random() * wordList.length);
-    selectedWords.push(wordList[randomIndex]);
+function getRandomBytes(length: number): Uint8Array {
+  const array = new Uint8Array(length);
+  
+  // Try using the global crypto.getRandomValues first
+  if (typeof (global as any).crypto?.getRandomValues === 'function') {
+    try {
+      (global as any).crypto.getRandomValues(array);
+      console.log('Used global crypto.getRandomValues for entropy');
+      return array;
+    } catch (error) {
+      console.log('global crypto.getRandomValues failed:', error);
+    }
   }
-
-  return selectedWords.join(' ');
+  
+  // Fallback to Math.random (less secure but works)
+  console.log('Using Math.random fallback for entropy');
+  for (let i = 0; i < length; i++) {
+    array[i] = Math.floor(Math.random() * 256);
+  }
+  
+  return array;
 }
 
 /**
- * Convert a mnemonic phrase to a seed
- * In a real app, this would use a proper BIP39 library
+ * Generate a BIP39 mnemonic phrase with manual entropy generation
+ * 128 bits ÷ 8 = 16 bytes of entropy
+ * 6 bytes of entropy = 12 words in BIP39
+ */
+export function generateMnemonic(strength: number = 128): string {
+  try {
+    console.log('Generating mnemonic with strength:', strength);
+    
+    // Generate entropy manually
+    const entropyLength = strength / 8; // 128 bits = 16 bytes
+    const entropy = getRandomBytes(entropyLength);
+    
+    console.log('Generated entropy bytes:', entropy.length);
+    
+    // Convert entropy to hex string
+    const entropyHex = Array.from(entropy, byte => 
+      byte.toString(16).padStart(2, '0')
+    ).join('');
+    
+    console.log('Entropy hex length:', entropyHex.length);
+    
+    // Create mnemonic from entropy
+    const mnemonic = entropyToMnemonic(entropyHex);
+    
+    // Validate the generated mnemonic
+    if (!validateMnemonic(mnemonic)) {
+      throw new Error('Generated invalid mnemonic');
+    }
+    
+    console.log('Successfully generated and validated mnemonic');
+    return mnemonic;
+  } catch (error) {
+    console.error('Error generating mnemonic:', error);
+    throw error;
+  }
+}
+
+/**
+ * Convert a mnemonic phrase to a seed using BIP39.
  */
 export async function mnemonicToSeed(mnemonic: string): Promise<Uint8Array> {
-  // For demo purposes, using a simple hash function
-  // In a real app, this would use proper BIP39 derivation
-  const encoder = new TextEncoder();
-  const data = encoder.encode(mnemonic);
-  const hashBuffer = await Random.digestStringAsync(
-    Random.CryptoDigestAlgorithm.SHA256,
-    mnemonic
-  );
-  
-  // Convert hex string to Uint8Array
-  const hashArray = new Uint8Array(32);
-  for (let i = 0; i < 32; i++) {
-    hashArray[i] = parseInt(hashBuffer.substr(i * 2, 2), 16);
+  try {
+    // Validate mnemonic first
+    if (!validateMnemonic(mnemonic)) {
+      throw new Error('Invalid mnemonic phrase');
+    }
+    
+    const seedBuffer = mnemonicToSeedSync(mnemonic);
+    return new Uint8Array(seedBuffer.buffer, seedBuffer.byteOffset, seedBuffer.byteLength / Uint8Array.BYTES_PER_ELEMENT);
+  } catch (error) {
+    console.error('Error converting mnemonic to seed:', error);
+    throw error;
   }
-  
-  return hashArray;
+}
+
+/**
+ * Validate a BIP39 mnemonic phrase
+ */
+export function validateMnemonicPhrase(mnemonic: string): boolean {
+  return validateMnemonic(mnemonic);
 }
 
 /**

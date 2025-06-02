@@ -81,6 +81,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
       await SecureStore.setItemAsync('kraftpay_private_key', newPrivateKey);
       
       setPublicKey(newPublicKey);
+      console.log('Key====>', keypair.secretKey);
       setPrivateKey(keypair.secretKey);
     } catch (error) {
       console.error('Error creating wallet:', error);

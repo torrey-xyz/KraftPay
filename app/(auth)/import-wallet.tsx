@@ -18,11 +18,6 @@ export default function ImportWalletScreen() {
     newSeedWords[index] = word.toLowerCase().trim();
     setSeedWords(newSeedWords);
     setError(null);
-
-    // Auto-focus next input when current word is complete
-    if (word.trim() && index < 11) {
-      inputRefs.current[index + 1]?.focus();
-    }
   };
 
   const handleKeyPress = (index: number, key: string) => {
@@ -143,7 +138,15 @@ export default function ImportWalletScreen() {
         </View>
 
         <View style={styles.wordsGrid}>
-          {Array.from({ length: 12 }, (_, index) => renderWordInput(index))}
+          {/* Render 4 columns x 3 rows for 12 words */}
+          {Array.from({ length: 3 }).map((_, rowIdx) => (
+            <View key={rowIdx} style={styles.wordsRow}>
+              {Array.from({ length: 4 }).map((_, colIdx) => {
+                const index = rowIdx * 4 + colIdx;
+                return renderWordInput(index);
+              })}
+            </View>
+          ))}
         </View>
 
         {error && (
@@ -231,35 +234,42 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   wordsGrid: {
+    flexDirection: 'column',
+    padding: 10,
+    marginBottom: 16,
+    width: '100%',
+  },
+  wordsRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 24,
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 8,
   },
   wordContainer: {
-    width: '31%',
-    marginBottom: 16,
+    width: 70,
+    marginHorizontal: 4,
+    marginBottom: 0,
     backgroundColor: '#1E293B',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#334155',
     overflow: 'hidden',
+    alignItems: 'center',
   },
   wordNumber: {
     fontFamily: 'Inter-Medium',
-    fontSize: 12,
+    fontSize: 10,
     color: '#64748B',
-    paddingHorizontal: 12,
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingTop: 4,
+    paddingBottom: 2,
   },
   wordInput: {
     color: '#FFFFFF',
     fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    paddingHorizontal: 12,
-    paddingBottom: 12,
-    minHeight: 20,
+    fontSize: 13,
+    paddingBottom: 6,
+    minHeight: 18,
+    textAlign: 'center',
   },
   errorContainer: {
     flexDirection: 'row',

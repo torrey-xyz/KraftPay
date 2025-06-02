@@ -121,7 +121,16 @@ export default function CreateWalletScreen() {
             </View>
 
             <View style={styles.wordsGrid}>
-              {seedWords.map((word, index) => renderWordDisplay(index, word))}
+              {/* Render 4 columns x 3 rows for 12 words */}
+              {Array.from({ length: 3 }).map((_, rowIdx) => (
+                <View key={rowIdx} style={styles.wordsRow}>
+                  {Array.from({ length: 4 }).map((_, colIdx) => {
+                    const index = rowIdx * 4 + colIdx;
+                    const word = seedWords[index] || '';
+                    return renderWordDisplay(index, word);
+                  })}
+                </View>
+              ))}
             </View>
 
             <View style={styles.warningBox}>
@@ -180,6 +189,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 24,
+    justifyContent: 'flex-start',
   },
   description: {
     fontFamily: 'Inter-Regular',
@@ -242,35 +252,41 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   wordsGrid: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  wordsRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 24,
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 8,
   },
   wordContainer: {
-    width: '31%',
-    marginBottom: 16,
+    width: 70,
+    marginHorizontal: 4,
+    marginBottom: 0,
     backgroundColor: '#1E293B',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#334155',
     overflow: 'hidden',
+    alignItems: 'center',
   },
   wordNumber: {
     fontFamily: 'Inter-Medium',
-    fontSize: 12,
+    fontSize: 10,
     color: '#64748B',
-    paddingHorizontal: 12,
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingTop: 4,
+    paddingBottom: 2,
   },
   wordText: {
     color: '#FFFFFF',
     fontFamily: 'Inter-Medium',
-    fontSize: 16,
-    paddingHorizontal: 12,
-    paddingBottom: 12,
-    minHeight: 20,
+    fontSize: 13,
+    paddingBottom: 6,
+    minHeight: 18,
   },
   seedPhraseContainer: {
     backgroundColor: '#1E293B',
